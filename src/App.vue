@@ -1,49 +1,16 @@
 <template>
     <div id="app">
-        @{{ user.username}} - {{ fullname}}
-        <strong>Followers </strong> {{ followers }}
-        <button @click="followUser">
-            Follow
-        </button>
+        <UserProfile/>
     </div>
 </template>
 
 <script>
+import UserProfile from './components/UserProfile';
+
 export default {
     name: "App",
-    data() {
-        return {
-            followers: 0,
-            user: {
-                id: 1,
-                username: '_RajatVerma',
-                firstname: 'Rajat',
-                lastname: 'Verma',
-                email: 'rajatv89@gmail.com',
-                isAdmin: true,
-            }
-        }
-    },
-    watch: {
-        followers(newFollowerCount, oldFollowerCount) {
-            if (oldFollowerCount < newFollowerCount) {
-                console.log(`${ this.user.username } has gained a follower!`)
-            }
-        }
-    },
-    computed: {
-        fullname() {
-            return `${this.user.firstname} ${this.user.lastname}` // String Literals
-            // Eqivalent to this.user.firstname+" "+this.user.lastname
-        }
-    },
-    methods: {
-        followUser() {
-            this.followers++
-        }
-    },
-    mounted() {
-        this.followUser();
+    components: {
+        UserProfile,
     }
 
 };
@@ -57,7 +24,7 @@ export default {
     text-align: center;
     color: #2c3e50;
     display: flex;
-    flex-direction: column;
-    text-align: center;
+    min-height: 100vh;
+    background-color: #F3F5FA;
 }
 </style>
