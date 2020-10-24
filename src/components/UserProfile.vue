@@ -8,21 +8,54 @@
             <div class="user-profile_follower-count">
                 <strong>Followers: </strong> {{ followers }}
             </div>
-        </div>
-        <div class="user-profile_twoots-wrapper">
-            <div class="user-profile_twoots" v-for="twoot in user.twoots" :key="twoot.id" >
-                {{ twoot.content }}
+            <div>
+                <form class="user-profile_create-twoot" @submit.prevent="createNewTwoot">
+                    <label for="newTwoot"><strong>New Twoot</strong></label> <!-- Labels Necessary for form -->
+                    <textarea id="newTwoot" rows="4" v-model="newTwootContent"></textarea>
+
+                    <div class="user-profile_create-twoot-type">
+                        <label for="newTwootType"><strong>Type: </strong></label>
+                        <select id="newTwootType" v-model="selectedTwootType">
+                            <option :value="option.value" v-for="(option, index) in twootType" :key="index">
+                                {{option.name}}
+
+                            </option>
+                        </select>
+
+                    </div>
+                    <button>
+                        Twoot!
+                    </button>
+                </form>
             </div>
+        </div>
+        <div class="user-profile_twoots-wraps">
+            <TwootItem
+                v-for="twoot in user.twoots"
+                :key="twoot.id"
+                :username="user.username"
+                :twoot="twoot"
+                @favourite="toggleFavourite"
+            />
         </div>
     </div>
 </template>
 
 <script>
+import TwootItem from "./TwootItem";
+
 export default {
     name: "UserProfile",
+    components: { TwootItem },
     data() {
         return {
             followers: 0,
+            newTwootContent: '',
+            selectedTwootType: 'instance', // Making default empty
+            twootType: [
+                {value: 'draft', name: 'Draft'},
+                {value: 'instance', name: 'Instance Twoot'},
+            ],
             user: {
                 id: 1,
                 username: "_RajatVerma",
@@ -37,7 +70,8 @@ export default {
                     },
                     {
                         id: 2,
-                        content: "Don't forget to check out my projects on github!"
+                        content:
+                            "Don't forget to check out my projects on github!"
                     }
                 ]
             }
@@ -59,6 +93,19 @@ export default {
     methods: {
         followUser() {
             this.followers++;
+        },
+        toggleFavourite(id) {
+            console.log(`Favourite tweet #${id}`)
+        },
+        createNewTwoot() {
+            if (this.newTwootContent && this.selectedTwootType !== 'draft') {
+                this.user.twoots.unshift({ // adds at the begining of list
+                    id: this.user.twoots.length + 1,
+                    content: this.newTwootContent,
+                })
+                this.newTwootContent = '';
+
+            }
         }
     },
     mounted() {
@@ -90,6 +137,11 @@ export default {
     margin-right: auto;
     padding: 0 10px;
     font-weight: bold;
+}
+.user-profile_create-twoot {
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 h1 {
